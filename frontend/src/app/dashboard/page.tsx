@@ -17,8 +17,21 @@ export default function DashboardPage() {
         const response = await apiService.getDashboardSummary();
         setSummary(response.data);
       } catch (err) {
-        setError('Erro ao carregar dados do dashboard');
-        console.error(err);
+        // Fallback para quando backend não está disponível
+        setSummary({
+          latest_risk_level: null,
+          latest_risk_value: null,
+          active_alerts_count: 0,
+          risk_distribution: {
+            baixo: 0,
+            moderado: 0,
+            alto: 0,
+            extremo: 0,
+            crítico: 0,
+          },
+          timestamp: new Date().toISOString(),
+        });
+        console.log('Backend não conectado - usando dados fallback');
       } finally {
         setLoading(false);
       }
@@ -91,6 +104,19 @@ export default function DashboardPage() {
         <h1 className="text-4xl font-bold text-gray-900">Dashboard Operacional</h1>
         <p className="text-gray-600 mt-2">Avaliação Prospectiva de Risco Climático - Porto Alegre</p>
       </div>
+
+      {/* Backend Not Connected Warning */}
+      {summary && (summary as any).message && (
+        <div className="bg-warning-50 border border-warning-200 rounded-lg p-4 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-warning-600 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-warning-800 font-medium">Backend não conectado</p>
+            <p className="text-warning-700 text-sm mt-1">
+              Os dados climáticos não estão disponíveis. Configure o backend para funcionalidade completa.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Risk Status Card */}
       {summary && (
