@@ -19,6 +19,7 @@ export default function DashboardPage() {
       } catch (err) {
         // Fallback para quando backend não está disponível
         setSummary({
+          latest_risk_matrix: null,
           latest_risk_level: null,
           latest_risk_value: null,
           active_alerts_count: 0,
