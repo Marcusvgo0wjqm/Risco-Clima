@@ -1,0 +1,11 @@
+FROM postgres:16
+
+# Instalar PostGIS
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    postgresql-16-postgis-3 \
+    postgresql-16-postgis-3-scripts \
+    && rm -rf /var/lib/apt/lists/*
+
+# Criar extensão PostGIS no banco de dados padrão
+RUN echo "CREATE EXTENSION IF NOT EXISTS postgis;" > /docker-entrypoint-initdb.d/01-postgis.sql

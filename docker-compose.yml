@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # PostgreSQL com PostGIS
+  postgres:
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
+    container_name: clima_risk_postgres
+    environment:
+      POSTGRES_USER: clima_user
+      POSTGRES_PASSWORD: clima_password
+      POSTGRES_DB: clima_risk_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U clima_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis para cache e tarefas assíncronas
+  redis:
+    image: redis:7-alpine
+    container_name: clima_risk_redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend FastAPI
+  backend:
+    build: ./backend
+    container_name: clima_risk_backend
+    environment:
+      DATABASE_URL: postgresql://clima_user:clima_password@postgres:5432/clima_risk_db
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: ${SECRET_KEY:-your-secret-key-change-in-production}
+      DEBUG: "false"
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Frontend Next.js
+  frontend:
+    build: ./frontend
+    container_name: clima_risk_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+    command: npm run dev
+
+volumes:
+  postgres_data:
