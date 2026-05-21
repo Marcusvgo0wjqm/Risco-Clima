@@ -8,49 +8,49 @@ import enum
 
 from app.db.session import Base
 
-class ENSOIndex(enum.Enum):
-    NEUTRALIDADE = 1
-    FRACO = 2
-    MODERADO = 3
-    FORTE = 4
-    MUITO_FORTE = 5
+class ENSOIndex(str, enum.Enum):
+    NEUTRALIDADE = "neutralidade"
+    FRACO = "fraco"
+    MODERADO = "moderado"
+    FORTE = "forte"
+    MUITO_FORTE = "muito_forte"
 
-class PrecipitationIndex(enum.Enum):
-    ATE_50 = 1
-    DE_51_A_100 = 2
-    DE_101_A_150 = 3
-    DE_151_A_250 = 4
-    ACIMA_250 = 5
+class PrecipitationIndex(str, enum.Enum):
+    ATE_50 = "até_50"
+    DE_51_A_100 = "51-100"
+    DE_101_A_150 = "101-150"
+    DE_151_A_250 = "151-250"
+    ACIMA_250 = "acima_250"
 
-class TemperatureIndex(enum.Enum):
-    NORMAL = 1
-    MAIS_1 = 2
-    MAIS_2 = 3
-    MAIS_3 = 4
-    MAIS_4_PERSISTENTE = 5
+class TemperatureIndex(str, enum.Enum):
+    NORMAL = "normal"
+    MAIS_1 = "mais_1"
+    MAIS_2 = "mais_2"
+    MAIS_3 = "mais_3"
+    MAIS_4_PERSISTENTE = "mais_4_persistente"
 
-class CapacityLevel(enum.Enum):
-    BAIXA = 0.70
-    MODERADA = 0.80
-    ELEVADA = 0.90
-    ESPECIALIZADA = 1.00
-    AVANCADA = 1.10
+class CapacityLevel(str, enum.Enum):
+    BAIXA = "baixa"
+    MODERADA = "moderada"
+    ELEVADA = "elevada"
+    ESPECIALIZADA = "especializada"
+    AVANCADA = "avançada"
 
-class ImpactIndex(enum.Enum):
-    INSIGNIFICANTE = 1
-    BAIXO = 2
-    MODERADO = 3
-    SEVERO = 4
-    CRITICO = 5
+class ImpactIndex(str, enum.Enum):
+    INSIGNIFICANTE = "insignificante"
+    BAIXO = "baixo"
+    MODERADO = "moderado"
+    SEVERO = "severo"
+    CRITICO = "crítico"
 
-class RiskLevel(enum.Enum):
+class RiskLevel(str, enum.Enum):
     BAIXO = "baixo"           # 1-4
     MODERADO = "moderado"     # 5-9
     ALTO = "alto"             # 10-14
     EXTREMO = "extremo"       # 15-19
     CRITICO = "crítico"       # 20-25
 
-class AlertLevel(enum.Enum):
+class AlertLevel(str, enum.Enum):
     ATENCAO = "atenção"
     ALERTA = "alerta"
     ALERTA_ALTO = "alerta_alto"
