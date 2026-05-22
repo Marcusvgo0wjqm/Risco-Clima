@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from datetime import datetime
+import json
 from app.core.config import get_settings
 from app.core.logger import get_logger
 from app.api.routes import enso, risk, precipitation, temperature, impact, capacity, alerts, audit
@@ -20,7 +21,8 @@ app = FastAPI(
     description="Plataforma de Avaliação Prospectiva de Risco Climático",
     version=settings.APP_VERSION,
     docs_url="/docs",
-    redoc_url="/redoc"
+    redoc_url="/redoc",
+    json_encoders={},
 )
 
 # Middleware CORS
@@ -31,6 +33,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Custom JSON encoder para UTF-8
+from fastapi.encoders import jsonable_encoder
+
+@app.middleware("http")
+async def add_charset_middleware(request, call_next):
+    response = await call_next(request)
+    if "application/json" in response.headers.get("content-type", ""):
+        response.headers["content-type"] = "application/json; charset=utf-8"
+    return response
 
 # Incluir rotas
 app.include_router(enso.router)
